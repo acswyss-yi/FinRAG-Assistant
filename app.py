@@ -28,16 +28,45 @@ def apply_styles():
         border-right: 1px solid #E0E3EA;
         padding: 1.5rem 1rem;
     }
-    /* 文件上传区域 */
-    [data-testid="stSidebar"] [data-testid="stFileUploader"] {
-        background: #fff;
-        border: 1.5px dashed #B0B8C8;
-        border-radius: 10px;
-        padding: 0.5rem;
+    /* 上传拖拽区域外框 */
+    [data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] {
+        background: #fff !important;
+        border: 1.5px dashed #C0C8D8 !important;
+        border-radius: 12px !important;
+        padding: 1.8rem 1rem !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 0.4rem !important;
+        box-shadow: 0 1px 6px rgba(0,0,0,0.06) !important;
+        transition: border-color 0.2s, background 0.2s !important;
     }
-    [data-testid="stSidebar"] [data-testid="stFileUploader"]:hover {
-        border-color: #4A7FC1;
-        background: #F5F8FF;
+    [data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"]:hover {
+        border-color: #4A7FC1 !important;
+        background: #F5F8FF !important;
+    }
+    /* 上传图标 */
+    [data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] svg {
+        width: 52px !important;
+        height: 52px !important;
+        color: #8A9BB5 !important;
+        margin-bottom: 0.3rem !important;
+    }
+    /* 浏览文件按钮 */
+    [data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] button {
+        background: #2C3E55 !important;
+        color: #fff !important;
+        border: none !important;
+        border-radius: 8px !important;
+        padding: 0.45rem 1.4rem !important;
+        font-size: 0.9rem !important;
+        font-weight: 600 !important;
+        margin-top: 0.6rem !important;
+        cursor: pointer !important;
+        transition: background 0.2s !important;
+    }
+    [data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] button:hover {
+        background: #1A2B3C !important;
     }
     /* 隐藏右上角 Deploy 按钮 */
     [data-testid="stToolbar"] {
