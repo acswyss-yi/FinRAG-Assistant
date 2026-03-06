@@ -3,20 +3,32 @@ import tempfile
 import streamlit as st
 from backend.rag import init_models, build_vector_db, build_rag_chain
 
-# 阿里云百炼 API Key
-os.environ["DASHSCOPE_API_KEY"] = "sk-7acaf31f9c714127abd3cda28ad8c14e"
-API_KEY = os.environ["DASHSCOPE_API_KEY"]
+
+@st.cache_resource
+def get_models(api_key):
+    return init_models(api_key)
 
 
 @st.cache_resource
-def get_models():
-    return init_models(API_KEY)
+def get_vector_db(file_path, api_key, original_name):
+    embeddings, _ = get_models(api_key)
+    return build_vector_db(file_path, embeddings, original_name)
 
 
-@st.cache_resource
-def get_vector_db(file_path):
-    embeddings, _ = get_models()
-    return build_vector_db(file_path, embeddings)
+@st.dialog("FinRAG-Assistant")
+def token_dialog():
+    st.markdown("请输入您的**阿里云百炼 API Key** 以继续使用。")
+    token = st.text_input("API Key", type="password", placeholder="sk-...")
+    if st.button("确认", use_container_width=True):
+        # 过滤非 ASCII 字符，防止复制粘贴带入不可见字符导致 HTTP 头编码报错
+        clean_token = token.strip().encode("ascii", "ignore").decode("ascii")
+        if not clean_token:
+            st.error("API Key 不能为空，请重新输入。")
+        elif not clean_token.startswith("sk-"):
+            st.error("API Key 格式不正确，应以 sk- 开头。")
+        else:
+            st.session_state.api_key = clean_token
+            st.rerun()
 
 
 def apply_styles():
@@ -81,9 +93,18 @@ def main():
     st.title("FinRAG-Assistant 内部金融财报解读助手")
     st.caption("本地私有知识库，不接入互联网搜索。")
 
-    embeddings, llm = get_models()
+    if "api_key" not in st.session_state:
+        token_dialog()
+        st.stop()
 
-    vectorstore = None
+    api_key = st.session_state.api_key
+    embeddings, llm = get_models(api_key)
+
+    if "vectorstore" not in st.session_state:
+        st.session_state.vectorstore = None
+    if "last_uploaded" not in st.session_state:
+        st.session_state.last_uploaded = None
+
     with st.sidebar:
         st.markdown("""
         <div style="font-size:1.2rem; font-weight:700; color:#1A2332;
@@ -93,15 +114,20 @@ def main():
         </div>
         """, unsafe_allow_html=True)
         uploaded_file = st.file_uploader("", type="pdf")
-        if uploaded_file:
+        if uploaded_file and uploaded_file.name != st.session_state.last_uploaded:
             suffix = os.path.splitext(uploaded_file.name)[1]
             with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
                 tmp.write(uploaded_file.read())
                 file_path = tmp.name
 
-            st.info("正在构建知识库，请稍候...")
-            vectorstore = get_vector_db(file_path)
+            with st.spinner("正在构建知识库，请稍候..."):
+                st.session_state.vectorstore = get_vector_db(file_path, api_key, uploaded_file.name)
+            st.session_state.last_uploaded = uploaded_file.name
             st.success("知识库构建完成！")
+        elif st.session_state.vectorstore:
+            st.success(f"已加载：{st.session_state.last_uploaded}")
+
+    vectorstore = st.session_state.vectorstore
 
     if "messages" not in st.session_state:
         st.session_state.messages = []
