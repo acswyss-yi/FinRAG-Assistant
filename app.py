@@ -19,7 +19,36 @@ def get_vector_db(file_path):
     return build_vector_db(file_path, embeddings)
 
 
+def apply_styles():
+    st.markdown("""
+    <style>
+    /* 侧边栏整体 */
+    [data-testid="stSidebar"] {
+        background-color: #F0F2F6;
+        border-right: 1px solid #E0E3EA;
+        padding: 1.5rem 1rem;
+    }
+    /* 文件上传区域 */
+    [data-testid="stSidebar"] [data-testid="stFileUploader"] {
+        background: #fff;
+        border: 1.5px dashed #B0B8C8;
+        border-radius: 10px;
+        padding: 0.5rem;
+    }
+    [data-testid="stSidebar"] [data-testid="stFileUploader"]:hover {
+        border-color: #4A7FC1;
+        background: #F5F8FF;
+    }
+    /* 隐藏右上角 Deploy 按钮 */
+    [data-testid="stToolbar"] {
+        display: none;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+
 def main():
+    apply_styles()
     st.title("FinRAG-Assistant 内部金融财报解读助手")
     st.caption("本地私有知识库，不接入互联网搜索。")
 
@@ -27,7 +56,14 @@ def main():
 
     vectorstore = None
     with st.sidebar:
-        uploaded_file = st.file_uploader("上传金融PDF文件", type="pdf")
+        st.markdown("""
+        <div style="font-size:1.2rem; font-weight:700; color:#1A2332;
+                    padding-bottom:0.6rem; margin-top:-1rem; margin-bottom:1.6rem;
+                    border-bottom:2px solid #4A7FC1;">
+            上传金融财报PDF文件
+        </div>
+        """, unsafe_allow_html=True)
+        uploaded_file = st.file_uploader("", type="pdf")
         if uploaded_file:
             suffix = os.path.splitext(uploaded_file.name)[1]
             with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
