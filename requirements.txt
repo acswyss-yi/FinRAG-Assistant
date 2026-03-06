@@ -1,0 +1,11 @@
+streamlit
+langchain
+langchain-community
+langchain-core
+langchain-openai
+langchain-text-splitters
+chromadb
+pymupdf
+dashscope
+
+
