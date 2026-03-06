@@ -110,7 +110,7 @@ def main():
         <div style="font-size:1.2rem; font-weight:700; color:#1A2332;
                     padding-bottom:0.6rem; margin-top:-1rem; margin-bottom:1.6rem;
                     border-bottom:2px solid #4A7FC1;">
-            上传金融财报PDF文件
+            上传财报PDF文件
         </div>
         """, unsafe_allow_html=True)
         uploaded_file = st.file_uploader("", type="pdf")
