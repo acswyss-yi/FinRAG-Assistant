@@ -40,7 +40,7 @@ def init_models(api_key: str):
     return embeddings, llm
 
 
-def build_vector_db(file_path: str, embeddings):
+def build_vector_db(file_path: str, embeddings, original_name: str = None):
     loader = PyMuPDFLoader(file_path)
     docs = loader.load()
     text_splitter = RecursiveCharacterTextSplitter(
@@ -48,6 +48,9 @@ def build_vector_db(file_path: str, embeddings):
         chunk_overlap=50
     )
     splits = text_splitter.split_documents(docs)
+    if original_name:
+        for doc in splits:
+            doc.metadata["source"] = original_name
     vectorstore = Chroma.from_documents(
         documents=splits,
         embedding=embeddings,
