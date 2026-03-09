@@ -9,10 +9,14 @@ def get_models(api_key):
     return init_models(api_key)
 
 
-@st.cache_resource
 def get_vector_db(file_path, api_key, original_name):
     embeddings, _ = get_models(api_key)
-    return build_vector_db(file_path, embeddings, original_name)
+    vectorstore = build_vector_db(file_path, embeddings, original_name)
+    try:
+        os.remove(file_path)
+    except OSError:
+        pass
+    return vectorstore
 
 
 @st.dialog("FinRAG-Assistant")

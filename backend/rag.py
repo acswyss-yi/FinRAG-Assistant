@@ -54,7 +54,6 @@ def build_vector_db(file_path: str, embeddings, original_name: str = None):
     vectorstore = Chroma.from_documents(
         documents=splits,
         embedding=embeddings,
-        persist_directory="./chroma_db"
     )
     return vectorstore
 
