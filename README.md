@@ -2,6 +2,8 @@
 
 基于 RAG（检索增强生成）的财报问答系统，使用阿里云百炼（通义千问）模型。
 
+**Demo：[http://8.149.245.12:8501/](http://8.149.245.12:8501/)**
+
 ## 功能
 
 - 上传金融 PDF 文档，自动构建本地向量知识库
@@ -41,7 +43,7 @@ RAG Knowledge Assistant/
 
 ```bash
 python -m venv .venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
+source .venv/bin/activate  
 pip install -r requirements.txt
 ```
 
