@@ -4,6 +4,10 @@
 
 **Demo：[http://8.149.245.12:8501/](http://8.149.245.12:8501/)**
 
+## 截图
+
+![FinRAG-Assistant 界面截图](docs/screenshot.png)
+
 ## 功能
 
 - 上传金融 PDF 文档，自动构建本地向量知识库
